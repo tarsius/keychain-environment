@@ -5,8 +5,9 @@
 ;; Author:  Paul Tipper <bluefoo at googlemail dot com>
 ;; Keywords: keychain, ssh
 ;; Created: 18 Dec 2008
+;; Updated: 16 Feb 2011
 
-;; Version: 1.0.2
+;; Version: 1.0.2-git
 
 ;; This file is not part of GNU Emacs.
  
@@ -60,27 +61,17 @@
 
 ;;; Code: 
 
-(if (not (boundp 'keychain-ssh-file))
-    (defvar keychain-ssh-file  (concat (getenv "HOME")
-                                               "/.keychain/" 
-                                               (car (split-string system-name 
-                                                                  "\\." 
-                                                                  t))
-                                               "-sh")
-      "Stores the location of the keychain ssh file to load.  Normally
-found in the '$HOME/.keychain' directory and called
-'$HOSTNAME-sh'."))
-(if (not (boundp 'keychain-gpg-file))
-    (defvar keychain-gpg-file  (concat (getenv "HOME")
-                                               "/.keychain/" 
-                                               (car (split-string system-name 
-                                                                  "\\." 
-                                                                  t))
-                                               "-sh-gpg")
-      "Stores the location of the keychain gpg file to load.  Normally
-found in the '$HOME/.keychain' directory and called
-'$HOSTNAME-sh-gpg'."))
+(defvar keychain-ssh-file
+  (concat (getenv "HOME") "/.keychain/"
+	  (car (split-string system-name "\\." t)) "-sh")
+  "Stores the location of the keychain ssh file to load.
+Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh'.")
 
+(defvar keychain-gpg-file
+  (concat (getenv "HOME") "/.keychain/"
+	  (car (split-string system-name "\\." t)) "-sh-gpg")
+  "Stores the location of the keychain gpg file to load.
+Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh-gpg'.")
 
 ;; Really there should be an easier method of doing this surely?
 (if (not (fboundp 'read-file))
