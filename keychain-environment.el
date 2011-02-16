@@ -89,25 +89,31 @@ Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh-gpg'.
     data)))
 
 (defun keychain-refresh-environment ()
-  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
-and GPG_AGENT variables into the environment and returns them as a list."
+  "Set ssh and gpg environment variables based on information from keychain.
+
+The environment variables SSH_AUTH_SOCK, SSH_AGENT_PID and GPG_AGENT are
+set in variable `process-environment' based on information retrieved from
+keychain."
   (interactive)
-  (let* ((ssh-data (keychain-read-file keychain-ssh-file))
-         (gpg-data (keychain-read-file keychain-gpg-file))
-         (auth-sock (progn 
+  (let* ((ssh-data  (when (file-exists-p keychain-ssh-file)
+		      (keychain-read-file keychain-ssh-file)))
+         (gpg-data  (when (file-exists-p keychain-gpg-file)
+		      (keychain-read-file keychain-gpg-file)))
+         (auth-sock (when ssh-data
                       (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
                       (match-string 1 ssh-data)))
-         (auth-pid (progn
-                     (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
-                     (match-string 1 ssh-data)))
-         (gpg-agent (progn
-                      (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
-                      (match-string 1 gpg-data)
-                      ))
-         )
-    (setenv "SSH_AUTH_SOCK" auth-sock)
-    (setenv "SSH_AUTH_PID" auth-pid)
-    (setenv "GPG_AGENT_INFO" gpg-agent)
+         (auth-pid  (when ssh-data
+		      (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
+		      (match-string 1 ssh-data)))
+	 (gpg-agent (when gpg-data
+		      (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
+		      (match-string 1 gpg-data))))
+    (when auth-sock
+      (setenv "SSH_AUTH_SOCK" auth-sock))
+    (when auth-pid
+      (setenv "SSH_AUTH_PID" auth-pid))
+    (when gpg-agent
+      (setenv "GPG_AGENT_INFO" gpg-agent))
     (list auth-sock auth-pid gpg-agent)))
 
 (provide 'keychain-environment)
