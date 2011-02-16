@@ -26,10 +26,9 @@
 
 ;;; Commentary: 
 ;; 
-;; Designed for use with Keychain, see:
-;; (http://www.gentoo.org/proj/en/keychain/) a tool for loading the
-;; SSH Agent and keeping it running and accessible on a machine for
-;; longer than a single login seession.
+;; Designed for use with Keychain (see http://docs.funtoo.org/wiki/Keychain)
+;; a tool for loading the SSH Agent and keeping it running and accessible on
+;; a machine for longer than a single login seession.
 ;; 
 ;; This library loads the file "$HOME/.keychain/$HOSTNAME-sh" and parses it for
 ;; the SSH_AUTH_SOCK, SSH_AUTH_PID and GPG_AGENT_INFO variables, placing these
