@@ -70,22 +70,21 @@ Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh'.")
   "Stores the location of the keychain gpg file to load.
 Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh-gpg'.")
 
-;; Really there should be an easier method of doing this surely?
 (defun keychain-read-file (filename)
   "Takes a filename, reads the data from it and returns it as a string"
-  (let* ((real-filename (expand-file-name filename))
-	 (visited (find-buffer-visiting real-filename))
-	 (orig-buffer (current-buffer))
-	 (buf (find-file-noselect real-filename))
-	 (data (save-excursion
-		 (set-buffer buf)
-		 (let ((data (buffer-substring-no-properties (point-min)
-							     (point-max))))
-		   (set-buffer orig-buffer)
-		   data))))
-    (unless visited
-      (kill-buffer buf))
-    data)))
+  (let* ((old-buffer (find-buffer-visiting filename))
+	 old-buffer-name)
+    (with-current-buffer (let ((find-file-visit-truename t))
+			   (or old-buffer (find-file-noselect filename)))
+      (when old-buffer
+	(setq old-buffer-name (buffer-file-name))
+	(set-visited-file-name (file-chase-links filename)))
+      (prog1 (buffer-substring-no-properties (point-min) (point-max))
+	(if old-buffer
+	    (progn
+	      (set-visited-file-name old-buffer-name)
+	      (set-buffer-modified-p nil))
+	  (kill-buffer (current-buffer)))))))
 
 (defun keychain-refresh-environment ()
   "Set ssh and gpg environment variables based on information from keychain.
