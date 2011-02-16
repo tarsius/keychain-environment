@@ -74,34 +74,28 @@ Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh'.")
 Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh-gpg'.")
 
 ;; Really there should be an easier method of doing this surely?
-(if (not (fboundp 'read-file))
-    (defun read-file (filename)
-      "Takes a filename, reads the data from it and returns it as a string"
-      
-      (let* ((real-filename (expand-file-name filename))
-             (visited (find-buffer-visiting real-filename))
-             (orig-buffer (current-buffer))
-             (buf (find-file-noselect real-filename))
-             (data (save-excursion
-                     (set-buffer buf)
-                     (let ((data (buffer-substring-no-properties (point-min) 
-                                                                 (point-max))))
-                       (set-buffer orig-buffer)
-                       data))))
-        
-        ;; Only kill the buffer if we didn't have a copy when we started
-        (if (null visited)
-            (kill-buffer buf))
-        
-        ;; And return the data.
-        data)))
+(defun keychain-read-file (filename)
+  "Takes a filename, reads the data from it and returns it as a string"
+  (let* ((real-filename (expand-file-name filename))
+	 (visited (find-buffer-visiting real-filename))
+	 (orig-buffer (current-buffer))
+	 (buf (find-file-noselect real-filename))
+	 (data (save-excursion
+		 (set-buffer buf)
+		 (let ((data (buffer-substring-no-properties (point-min)
+							     (point-max))))
+		   (set-buffer orig-buffer)
+		   data))))
+    (unless visited
+      (kill-buffer buf))
+    data)))
 
 (defun refresh-keychain-environment ()
   "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
 and GPG_AGENT variables into the environment and returns them as a list."
   (interactive)
-  (let* ((ssh-data (read-file keychain-ssh-file))
-         (gpg-data (read-file keychain-gpg-file))
+  (let* ((ssh-data (keychain-read-file keychain-ssh-file))
+         (gpg-data (keychain-read-file keychain-gpg-file))
          (auth-sock (progn 
                       (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
                       (match-string 1 ssh-data)))
