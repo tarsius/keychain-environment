@@ -61,17 +61,15 @@
 (defvar keychain-ssh-file
   (concat (getenv "HOME") "/.keychain/"
 	  (car (split-string system-name "\\." t)) "-sh")
-  "Stores the location of the keychain ssh file to load.
-Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh'.")
+  "The location of the keychain ssh file.")
 
 (defvar keychain-gpg-file
   (concat (getenv "HOME") "/.keychain/"
 	  (car (split-string system-name "\\." t)) "-sh-gpg")
-  "Stores the location of the keychain gpg file to load.
-Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh-gpg'.")
+  "The location of the keychain gpg file.")
 
 (defun keychain-read-file (filename)
-  "Takes a filename, reads the data from it and returns it as a string"
+  "Read the content of file FILENAME and return it as a string"
   (let* ((old-buffer (find-buffer-visiting filename))
 	 old-buffer-name)
     (with-current-buffer (let ((find-file-visit-truename t))
