@@ -40,20 +40,18 @@
 ;; window manager, which doesn't have these variables as you started keychain
 ;; after you logged in (say as part of your .bashrc)
 ;;
-;; The function (refresh-keychain-environment) can also be run at any time
+;; The function (keychain-refresh-environment) can also be run at any time
 ;; these variables change.
 
 ;;; Installation:
+;;
 ;; Put the file in your load-path then use:
 ;; 
 ;;   (require 'keychain-environment)
-;;   (eval-after-load "keychain-environment" '(refresh-keychain-environment))
-;;
-;; If you want to customise the location of the keychain file then use this:
-;;
-;;   (setq keychain-environment-file "~/path-to-file")
+;;   (keychain-refresh-environment)
  
 ;;; History:
+;;
 ;; 2008-12-18 Initial development.
 ;; 2009-02-25 Fixed bug with system-name being evaluated to the full hostname
 ;; 2010-07-27 Added GPG_AGENT support
@@ -90,7 +88,7 @@ Normally found in the '$HOME/.keychain' directory and called '$HOSTNAME-sh-gpg'.
       (kill-buffer buf))
     data)))
 
-(defun refresh-keychain-environment ()
+(defun keychain-refresh-environment ()
   "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
 and GPG_AGENT variables into the environment and returns them as a list."
   (interactive)
