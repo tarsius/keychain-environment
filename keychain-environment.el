@@ -1,28 +1,28 @@
-;;; keychain-environment.el --- Loads keychain environment variables into emacs
+;;; keychain-environment.el --- loads keychain environment variables
 
-;; Copyright (C) 2008-2010 Paul Tipper
+;; Copyright (C) 2011-2012  Jonas Bernoulli
+;; Copyright (C) 2008-2011  Paul Tipper
 
-;; Author:  Paul Tipper <bluefoo at googlemail dot com>
-;; Keywords: keychain, ssh
-;; Created: 18 Dec 2008
-;; Updated: 16 Feb 2011
-
-;; Version: 1.0.2-git
+;; Author: Paul Tipper <bluefoo at googlemail dot com>
+;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Keywords: gnupg, pgp, ssh
+;; Version:
+;; Created: 20081218
 
 ;; This file is not part of GNU Emacs.
 
-;; This program is free software; you can redistribute it and/or modify
+;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
 
-;; This program is distributed in the hope that it will be useful,
+;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; For a full copy of the GNU General Public License
+;; see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -48,13 +48,6 @@
 ;;
 ;;   (require 'keychain-environment)
 ;;   (keychain-refresh-environment)
-
-;;; History:
-;;
-;; 2008-12-18 Initial development.
-;; 2009-02-25 Fixed bug with system-name being evaluated to the full hostname
-;; 2010-07-27 Added GPG_AGENT support
-;;            (by Michael Markert: markert dot michael at googlemail dot com)
 
 ;;; Code:
 
