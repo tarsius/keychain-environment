@@ -55,22 +55,6 @@
   (convert-standard-filename (expand-file-name "~/.keychain/"))
   "The directory where keychain saves environment variables.")
 
-(defun keychain-read-file (filename)
-  "Read the content of file FILENAME and return it as a string"
-  (let ((old-buffer (find-buffer-visiting filename))
-        old-buffer-name)
-    (with-current-buffer (let ((find-file-visit-truename t))
-                           (or old-buffer (find-file-noselect filename)))
-      (when old-buffer
-        (setq old-buffer-name (buffer-file-name))
-        (set-visited-file-name (file-chase-links filename)))
-      (prog1 (buffer-substring-no-properties (point-min) (point-max))
-        (if old-buffer
-            (progn
-              (set-visited-file-name old-buffer-name)
-              (set-buffer-modified-p nil))
-          (kill-buffer (current-buffer)))))))
-
 (defun keychain-refresh-environment ()
   "Set ssh and gpg environment variables based on information from keychain.
 
@@ -103,6 +87,22 @@ keychain."
     (when gpg-agent
       (setenv "GPG_AGENT_INFO" gpg-agent))
     (list auth-sock auth-pid gpg-agent)))
+
+(defun keychain-read-file (filename)
+  "Read the content of file FILENAME and return it as a string"
+  (let ((old-buffer (find-buffer-visiting filename))
+        old-buffer-name)
+    (with-current-buffer (let ((find-file-visit-truename t))
+                           (or old-buffer (find-file-noselect filename)))
+      (when old-buffer
+        (setq old-buffer-name (buffer-file-name))
+        (set-visited-file-name (file-chase-links filename)))
+      (prog1 (buffer-substring-no-properties (point-min) (point-max))
+        (if old-buffer
+            (progn
+              (set-visited-file-name old-buffer-name)
+              (set-buffer-modified-p nil))
+          (kill-buffer (current-buffer)))))))
 
 (provide 'keychain-environment)
 ;; Local Variables:
