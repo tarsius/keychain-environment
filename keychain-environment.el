@@ -1,13 +1,14 @@
-;;; keychain-environment.el --- loads keychain environment variables
+;;; keychain-environment.el --- load keychain environment variables
 
 ;; Copyright (C) 2011-2012  Jonas Bernoulli
 ;; Copyright (C) 2008-2011  Paul Tipper
 
 ;; Author: Paul Tipper <bluefoo at googlemail dot com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
-;; Keywords: gnupg, pgp, ssh
 ;; Version:
 ;; Created: 20081218
+;; Homepage: https://github.com/tarsius/keychain-environment
+;; Keywords: gnupg, pgp, ssh
 
 ;; This file is not part of GNU Emacs.
 
@@ -26,28 +27,26 @@
 
 ;;; Commentary:
 
-;; Designed for use with Keychain (see http://docs.funtoo.org/wiki/Keychain)
-;; a tool for loading the SSH Agent and keeping it running and accessible on
-;; a machine for longer than a single login seession.
-;;
-;; This library loads the file "$HOME/.keychain/$HOSTNAME-sh" and parses it for
-;; the SSH_AUTH_SOCK, SSH_AUTH_PID and GPG_AGENT_INFO variables, placing these
-;; into the environment of Emacs.
-;;
-;; This is useful for situations where you are running Emacs under X, not
-;; directly from a terminal, and its inheriting its environment from the
-;; window manager, which doesn't have these variables as you started keychain
-;; after you logged in (say as part of your .bashrc)
-;;
-;; The function (keychain-refresh-environment) can also be run at any time
-;; these variables change.
+;; Keychain is a script that manages ssh-agent and gpg-agent.  It is
+;; typically run from the shell's initialization file.  It allows your
+;; shells and cron jobs to share a single ssh-agent and/or gpg-agent.
 
-;;; Installation:
-;;
-;; Put the file in your load-path then use:
-;;
-;;   (require 'keychain-environment)
-;;   (keychain-refresh-environment)
+;; When keychain is run, it checks for running agent, otherwise it
+;; starts them.  It saves the agents' environment variables to files
+;; inside ~/.keychain/, so that subsequent shells can source these
+;; files.
+
+;; When Emacs is started under X11 and not directly from a terminal
+;; these variables are not.  This library looks for the files created
+;; by keychain and sets Emacs' environment variables accordingly.  It
+;; does not actually run keychain, so you still have to run that from
+;; a login shell first.
+
+;; To use run the function `keychain-refresh-environment' in your init
+;; file.  If keychain has not been run yet when you start Emacs you
+;; can also later call that function interactively.
+
+;; Also see: http://www.funtoo.org/wiki/Keychain
 
 ;;; Code:
 
@@ -56,11 +55,12 @@
   "The directory where keychain saves environment variables.")
 
 (defun keychain-refresh-environment ()
-  "Set ssh and gpg environment variables based on information from keychain.
+  "Set ssh-agent and gpg-agent environment variables.
 
-The environment variables SSH_AUTH_SOCK, SSH_AGENT_PID and GPG_AGENT are
-set in variable `process-environment' based on information retrieved from
-keychain."
+Set the environment variables SSH_AUTH_SOCK, SSH_AGENT_PID
+and GPG_AGENT in Emacs' `process-environment' according to
+information retrieved from files created by the keychain
+script."
   (interactive)
   (let* ((host      (car (split-string system-name "\\." t)))
          (ssh-file  (expand-file-name (concat host "-sh")
