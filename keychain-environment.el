@@ -54,6 +54,7 @@
   (convert-standard-filename (expand-file-name "~/.keychain/"))
   "The directory where keychain saves environment variables.")
 
+;;;###autoload
 (defun keychain-refresh-environment ()
   "Set ssh-agent and gpg-agent environment variables.
 
