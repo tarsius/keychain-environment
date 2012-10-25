@@ -63,8 +63,8 @@
 
 (defun keychain-read-file (filename)
   "Read the content of file FILENAME and return it as a string"
-  (let* ((old-buffer (find-buffer-visiting filename))
-         old-buffer-name)
+  (let ((old-buffer (find-buffer-visiting filename))
+        old-buffer-name)
     (with-current-buffer (let ((find-file-visit-truename t))
                            (or old-buffer (find-file-noselect filename)))
       (when old-buffer
