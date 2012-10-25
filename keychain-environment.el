@@ -51,15 +51,9 @@
 
 ;;; Code:
 
-(defvar keychain-ssh-file
-  (concat (getenv "HOME") "/.keychain/"
-          (car (split-string system-name "\\." t)) "-sh")
-  "The location of the keychain ssh file.")
-
-(defvar keychain-gpg-file
-  (concat (getenv "HOME") "/.keychain/"
-          (car (split-string system-name "\\." t)) "-sh-gpg")
-  "The location of the keychain gpg file.")
+(defvar keychain-directory
+  (convert-standard-filename (expand-file-name "~/.keychain/"))
+  "The directory where keychain saves environment variables.")
 
 (defun keychain-read-file (filename)
   "Read the content of file FILENAME and return it as a string"
@@ -84,16 +78,21 @@ The environment variables SSH_AUTH_SOCK, SSH_AGENT_PID and GPG_AGENT are
 set in variable `process-environment' based on information retrieved from
 keychain."
   (interactive)
-  (let* ((ssh-data  (when (file-exists-p keychain-ssh-file)
-                      (keychain-read-file keychain-ssh-file)))
-         (gpg-data  (when (file-exists-p keychain-gpg-file)
-                      (keychain-read-file keychain-gpg-file)))
+  (let* ((host      (car (split-string system-name "\\." t)))
+         (ssh-file  (expand-file-name (concat host "-sh")
+                                      keychain-directory))
+         (ssh-data  (when (file-exists-p ssh-file)
+                      (keychain-read-file ssh-file)))
          (auth-sock (when ssh-data
                       (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
                       (match-string 1 ssh-data)))
          (auth-pid  (when ssh-data
                       (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
                       (match-string 1 ssh-data)))
+         (gpg-file  (expand-file-name (concat host "-sh-gpg")
+                                      keychain-directory))
+         (gpg-data  (when (file-exists-p gpg-file)
+                      (keychain-read-file gpg-file)))
          (gpg-agent (when gpg-data
                       (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
                       (match-string 1 gpg-data))))
