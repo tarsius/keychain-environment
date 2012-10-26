@@ -84,7 +84,7 @@ script."
     (when auth-sock
       (setenv "SSH_AUTH_SOCK" auth-sock))
     (when auth-pid
-      (setenv "SSH_AUTH_PID" auth-pid))
+      (setenv "SSH_AGENT_PID" auth-pid))
     (when gpg-agent
       (setenv "GPG_AGENT_INFO" gpg-agent))
     (list auth-sock auth-pid gpg-agent)))
