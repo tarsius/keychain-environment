@@ -6,7 +6,7 @@
 ;; Author: Paul Tipper <bluefoo at googlemail dot com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081218
-;; Version: 2.0.0
+;; Version: 2.0.1
 ;; Homepage: https://github.com/tarsius/keychain-environment
 ;; Keywords: gnupg, pgp, ssh
 
