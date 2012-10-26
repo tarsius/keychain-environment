@@ -68,26 +68,26 @@ script."
                                       keychain-directory))
          (ssh-data  (when (file-exists-p ssh-file)
                       (keychain-read-file ssh-file)))
-         (auth-sock (when ssh-data
+         (ssh-sock  (when ssh-data
                       (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
                       (match-string 1 ssh-data)))
-         (auth-pid  (when ssh-data
+         (ssh-pid   (when ssh-data
                       (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
                       (match-string 1 ssh-data)))
          (gpg-file  (expand-file-name (concat host "-sh-gpg")
                                       keychain-directory))
          (gpg-data  (when (file-exists-p gpg-file)
                       (keychain-read-file gpg-file)))
-         (gpg-agent (when gpg-data
+         (gpg-info  (when gpg-data
                       (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
                       (match-string 1 gpg-data))))
-    (when auth-sock
-      (setenv "SSH_AUTH_SOCK" auth-sock))
-    (when auth-pid
-      (setenv "SSH_AGENT_PID" auth-pid))
-    (when gpg-agent
-      (setenv "GPG_AGENT_INFO" gpg-agent))
-    (list auth-sock auth-pid gpg-agent)))
+    (when ssh-sock
+      (setenv "SSH_AUTH_SOCK" ssh-sock))
+    (when ssh-pid
+      (setenv "SSH_AGENT_PID" ssh-pid))
+    (when gpg-info
+      (setenv "GPG_AGENT_INFO" gpg-info))
+    (list ssh-sock ssh-pid gpg-info)))
 
 (defun keychain-read-file (filename)
   "Read the content of file FILENAME and return it as a string"
