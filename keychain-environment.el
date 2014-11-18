@@ -90,20 +90,10 @@ script."
     (list ssh-sock ssh-pid gpg-info)))
 
 (defun keychain-read-file (filename)
-  "Read the content of file FILENAME and return it as a string"
-  (let ((old-buffer (find-buffer-visiting filename))
-        old-buffer-name)
-    (with-current-buffer (let ((find-file-visit-truename t))
-                           (or old-buffer (find-file-noselect filename)))
-      (when old-buffer
-        (setq old-buffer-name (buffer-file-name))
-        (set-visited-file-name (file-chase-links filename)))
-      (prog1 (buffer-substring-no-properties (point-min) (point-max))
-        (if old-buffer
-            (progn
-              (set-visited-file-name old-buffer-name)
-              (set-buffer-modified-p nil))
-          (kill-buffer (current-buffer)))))))
+  "Read the content of file FILENAME and return it as a string."
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (buffer-substring-no-properties (point-min) (point-max))))
 
 (provide 'keychain-environment)
 ;; Local Variables:
