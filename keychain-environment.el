@@ -63,33 +63,22 @@ and GPG_AGENT in Emacs' `process-environment' according to
 information retrieved from files created by the keychain
 script."
   (interactive)
-  (let* ((host      (car (split-string system-name "\\." t)))
-         (ssh-file  (expand-file-name (concat host "-sh")
-                                      keychain-directory))
-         (ssh-data  (when (file-exists-p ssh-file)
-                      (keychain-read-file ssh-file)))
-         (ssh-sock  (when ssh-data
-                      (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
-                      (match-string 1 ssh-data)))
-         (ssh-pid   (when ssh-data
-                      (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
-                      (match-string 1 ssh-data)))
-         (gpg-file  (expand-file-name (concat host "-sh-gpg")
-                                      keychain-directory))
-         (gpg-data  (when (file-exists-p gpg-file)
-                      (keychain-read-file gpg-file)))
-         (gpg-info  (when gpg-data
-                      (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
-                      (match-string 1 gpg-data))))
-    (when ssh-sock
-      (setenv "SSH_AUTH_SOCK" ssh-sock))
-    (when ssh-pid
-      (setenv "SSH_AGENT_PID" ssh-pid))
-    (when gpg-info
-      (setenv "GPG_AGENT_INFO" gpg-info))
-    (list ssh-sock ssh-pid gpg-info)))
+  (let* ((host     (car (split-string system-name "\\." t)))
+         (ssh-file (expand-file-name (concat host "-sh")     keychain-directory))
+         (gpg-file (expand-file-name (concat host "-sh-gpg") keychain-directory))
+         (ssh-data (and (file-exists-p ssh-file) (keychain--read-file ssh-file)))
+         (gpg-data (and (file-exists-p gpg-file) (keychain--read-file gpg-file))))
+    (list (and ssh-data
+               (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
+               (setenv "SSH_AUTH_SOCK" (match-string 1 ssh-data)))
+          (and ssh-data
+               (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
+               (setenv "SSH_AGENT_PID" (match-string 1 ssh-data)))
+          (and gpg-data
+               (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
+               (setenv "GPG_AGENT_INFO" (match-string 1 gpg-data))))))
 
-(defun keychain-read-file (filename)
+(defun keychain--read-file (filename)
   "Read the content of file FILENAME and return it as a string."
   (with-temp-buffer
     (insert-file-contents filename)
