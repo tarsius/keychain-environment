@@ -1,12 +1,11 @@
 ;;; keychain-environment.el --- load keychain environment variables
 
-;; Copyright (C) 2011-2012  Jonas Bernoulli
+;; Copyright (C) 2011-2014  Jonas Bernoulli
 ;; Copyright (C) 2008-2011  Paul Tipper
 
 ;; Author: Paul Tipper <bluefoo at googlemail dot com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081218
-;; Version: 2.0.1
 ;; Homepage: https://github.com/tarsius/keychain-environment
 ;; Keywords: gnupg, pgp, ssh
 
