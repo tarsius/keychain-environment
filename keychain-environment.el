@@ -37,14 +37,14 @@
 ;; files.
 
 ;; When Emacs is started under X11 and not directly from a terminal
-;; these variables are not.  This library looks for the files created
-;; by keychain and sets Emacs' environment variables accordingly.  It
-;; does not actually run keychain, so you still have to run that from
-;; a login shell first.
+;; these variables are not set.  This library looks for these files
+;; created by keychain and then sets Emacs' environment variables
+;; accordingly.  It does not actually run keychain, so you still
+;; have to run that from a login shell first.
 
-;; To use run the function `keychain-refresh-environment' in your init
-;; file.  If keychain has not been run yet when you start Emacs you
-;; can also later call that function interactively.
+;; To use run the function `keychain-refresh-environment' in your
+;; init file.  If keychain has not been run yet when you start Emacs
+;; you can also later call that function interactively.
 
 ;; Also see: http://www.funtoo.org/wiki/Keychain
 
