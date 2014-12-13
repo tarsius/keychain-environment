@@ -53,6 +53,9 @@
   (convert-standard-filename (expand-file-name "~/.keychain/"))
   "The directory where keychain saves environment variables.")
 
+(defvar keychain-allow-dots-in-system-name t
+  "Give a chance to system names containing dots.")
+
 ;;;###autoload
 (defun keychain-refresh-environment ()
   "Set ssh-agent and gpg-agent environment variables.
@@ -62,7 +65,8 @@ and GPG_AGENT in Emacs' `process-environment' according to
 information retrieved from files created by the keychain
 script."
   (interactive)
-  (let* ((host     (car (split-string system-name "\\." t)))
+  (let* ((host     (if keychain-allow-dots-in-system-name system-name
+                     (car (split-string system-name "\\." t))))
          (ssh-file (expand-file-name (concat host "-sh")     keychain-directory))
          (gpg-file (expand-file-name (concat host "-sh-gpg") keychain-directory))
          (ssh-data (and (file-exists-p ssh-file) (keychain--read-file ssh-file)))
