@@ -54,15 +54,15 @@
   "The directory where keychain saves environment variables.")
 
 ;;;###autoload
-(defun keychain-refresh-environment ()
+(defun keychain-refresh-environment (&optional host-name)
   "Set ssh-agent and gpg-agent environment variables.
 
 Set the environment variables SSH_AUTH_SOCK, SSH_AGENT_PID
 and GPG_AGENT in Emacs' `process-environment' according to
 information retrieved from files created by the keychain
-script."
+script with optional HOST-NAME."
   (interactive)
-  (let* ((host     (car (split-string system-name "\\." t)))
+  (let* ((host     (if (null host-name) (system-name) host-name))
          (ssh-file (expand-file-name (concat host "-sh")     keychain-directory))
          (gpg-file (expand-file-name (concat host "-sh-gpg") keychain-directory))
          (ssh-data (and (file-exists-p ssh-file) (keychain--read-file ssh-file)))
