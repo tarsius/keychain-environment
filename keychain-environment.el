@@ -62,7 +62,7 @@ and GPG_AGENT in Emacs' `process-environment' according to
 information retrieved from files created by the keychain
 script."
   (interactive)
-  (let* ((host     (car (split-string system-name "\\." t)))
+  (let* ((host     (system-name))
          (ssh-file (expand-file-name (concat host "-sh")     keychain-directory))
          (gpg-file (expand-file-name (concat host "-sh-gpg") keychain-directory))
          (ssh-data (and (file-exists-p ssh-file) (keychain--read-file ssh-file)))
