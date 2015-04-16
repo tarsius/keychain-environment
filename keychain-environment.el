@@ -49,10 +49,6 @@
 
 ;;; Code:
 
-(defvar keychain-directory
-  (convert-standard-filename (expand-file-name "~/.keychain/"))
-  "The directory where keychain saves environment variables.")
-
 ;;;###autoload
 (defun keychain-refresh-environment ()
   "Set ssh-agent and gpg-agent environment variables.
@@ -62,11 +58,10 @@ and GPG_AGENT in Emacs' `process-environment' according to
 information retrieved from files created by the keychain
 script."
   (interactive)
-  (let* ((host     (system-name))
-         (ssh-file (expand-file-name (concat host "-sh")     keychain-directory))
-         (gpg-file (expand-file-name (concat host "-sh-gpg") keychain-directory))
-         (ssh-data (and (file-exists-p ssh-file) (keychain--read-file ssh-file)))
-         (gpg-data (and (file-exists-p gpg-file) (keychain--read-file gpg-file))))
+  (let* ((ssh-data
+          (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
+         (gpg-data
+          (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
     (list (and ssh-data
                (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
                (setenv "SSH_AUTH_SOCK" (match-string 1 ssh-data)))
@@ -76,12 +71,6 @@ script."
           (and gpg-data
                (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
                (setenv "GPG_AGENT_INFO" (match-string 1 gpg-data))))))
-
-(defun keychain--read-file (filename)
-  "Read the content of file FILENAME and return it as a string."
-  (with-temp-buffer
-    (insert-file-contents filename)
-    (buffer-substring-no-properties (point-min) (point-max))))
 
 (provide 'keychain-environment)
 ;; Local Variables:
