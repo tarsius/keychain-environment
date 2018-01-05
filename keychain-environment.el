@@ -49,6 +49,21 @@
 
 ;;; Code:
 
+(defvar keychain-should-inherit
+  nil
+  "Should the keychain invocation should inherit.
+Can be either nil, local, any or t. See keychain manual.")
+
+(defun keychain-command (type)
+  "Return keychain invocation for `TYPE'."
+  (format "keychain -q --noask %s --agents %s --eval"
+          (case keychain-should-inherit
+            ('nil "--noinherit")
+            ('local "--inherit local")
+            ('any "--inherit any")
+            ('t "--inherit local-once"))
+          type))
+
 ;;;###autoload
 (defun keychain-refresh-environment ()
   "Set ssh-agent and gpg-agent environment variables.
@@ -57,8 +72,8 @@ Set the environment variables `SSH_AUTH_SOCK', `SSH_AGENT_PID'
 and `GPG_AGENT' in Emacs' `process-environment' according to
 information retrieved from files created by the keychain script."
   (interactive)
-  (let* ((ssh (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
-         (gpg (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
+  (let* ((ssh (shell-command-to-string (keychain-command "ssh")))
+         (gpg (shell-command-to-string (keychain-command "gpg"))))
     (list (and ssh
                (string-match "SSH_AUTH_SOCK[=\s]\\([^\s;\n]*\\)" ssh)
                (setenv       "SSH_AUTH_SOCK" (match-string 1 ssh)))
