@@ -54,9 +54,18 @@
   "Should the keychain invocation should inherit.
 Can be either nil, local, any or t. See keychain manual.")
 
+(defvar keychain-be-quick
+  t
+  "Should keychain use the -Q option. I think there is a bug in
+keychain somewhere that means ssh-agent ends up being spawned anyway if
+  -Q is no specified")
+
 (defun keychain-command (type)
   "Return keychain invocation for `TYPE'."
-  (format "keychain -q --noask %s --agents %s --eval"
+  (format "keychain %s -q --noask %s --agents %s --eval"
+          (if keychain-be-quick
+              "-Q"
+            "")
           (case keychain-should-inherit
             ('nil "--noinherit")
             ('local "--inherit local")
