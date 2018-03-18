@@ -1,6 +1,6 @@
 ;;; keychain-environment.el --- load keychain environment variables
 
-;; Copyright (C) 2011-2016  Jonas Bernoulli
+;; Copyright (C) 2011-2018  Jonas Bernoulli
 ;; Copyright (C) 2008-2011  Paul Tipper
 
 ;; Author: Paul Tipper <bluefoo at googlemail dot com>
@@ -69,6 +69,7 @@ information retrieved from files created by the keychain script."
                (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
                (setenv       "GPG_AGENT_INFO" (match-string 1 gpg))))))
 
+;;; _
 (provide 'keychain-environment)
 ;; Local Variables:
 ;; indent-tabs-mode: nil
