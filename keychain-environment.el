@@ -62,16 +62,15 @@ keychain somewhere that means ssh-agent ends up being spawned anyway if
 
 (defun keychain-command (type)
   "Return keychain invocation for `TYPE'."
-  (format "keychain %s -q --noask %s --agents %s --eval"
+  (format "keychain %s -q --noask %s --eval"
           (if keychain-be-quick
               "-Q"
             "")
           (case keychain-should-inherit
-            ('nil "--noinherit")
+            ('nil (format "--noinherit --agents %s" type))
             ('local "--inherit local")
             ('any "--inherit any")
-            ('t "--inherit local-once"))
-          type))
+            ('t "--inherit local-once"))))
 
 ;;;###autoload
 (defun keychain-refresh-environment ()
